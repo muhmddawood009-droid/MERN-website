@@ -15,11 +15,29 @@ dotenv.config();
 
 const app = express();
 
-// ⚠️ IMPORTANT: In serverless, avoid reconnecting on every request in production
-connectDB();
-connectCloudinary();
+// --------------------
+// DB + Cloudinary Init (SAFE VERSION)
+// --------------------
+let isInitialized = false;
 
+const initServices = async () => {
+  if (!isInitialized) {
+    try {
+      await connectDB();
+      connectCloudinary();
+      isInitialized = true;
+      console.log("DB + Cloudinary connected");
+    } catch (err) {
+      console.error("Initialization error:", err);
+    }
+  }
+};
+
+initServices();
+
+// --------------------
 // Middlewares
+// --------------------
 app.use(express.json());
 app.use(
   cors({
@@ -29,7 +47,9 @@ app.use(
 );
 app.use(cookieParser());
 
+// --------------------
 // Routes
+// --------------------
 app.get("/", (req, res) => {
   res.send("Hello from server");
 });
@@ -41,11 +61,15 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/booking", bookingRoutes);
 
-// 404
+// --------------------
+// 404 handler
+// --------------------
 app.use((req, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// ❌ REMOVE app.listen()
+// --------------------
+// IMPORTANT: NO app.listen()
+// --------------------
 
 export default app;
