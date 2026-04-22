@@ -16,24 +16,24 @@ dotenv.config();
 const app = express();
 
 // --------------------
-// DB + Cloudinary Init (SAFE VERSION)
+// SAFE INIT (Vercel-friendly)
 // --------------------
-let isInitialized = false;
+let dbConnected = false;
 
-const initServices = async () => {
-  if (!isInitialized) {
+const init = async () => {
+  if (!dbConnected) {
     try {
       await connectDB();
       connectCloudinary();
-      isInitialized = true;
+      dbConnected = true;
       console.log("DB + Cloudinary connected");
     } catch (err) {
-      console.error("Initialization error:", err);
+      console.error("Init error:", err);
     }
   }
 };
 
-initServices();
+init();
 
 // --------------------
 // Middlewares
@@ -51,7 +51,7 @@ app.use(cookieParser());
 // Routes
 // --------------------
 app.get("/", (req, res) => {
-  res.send("Hello from server");
+  res.status(200).send("Hello from server");
 });
 
 app.use("/api/auth", authRoutes);
@@ -69,7 +69,6 @@ app.use((req, res) => {
 });
 
 // --------------------
-// IMPORTANT: NO app.listen()
+// VERCEL REQUIRED EXPORT
 // --------------------
-
 export default app;
