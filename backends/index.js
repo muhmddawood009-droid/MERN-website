@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 
 // --------------------
-// INIT ONCE ONLY (IMPORTANT FIX)
+// SAFE INIT (Vercel FIXED)
 // --------------------
 let initialized = false;
 
@@ -35,8 +35,12 @@ const initServices = async () => {
   }
 };
 
-// run ONCE at cold start only
-initServices();
+// IMPORTANT: do NOT run immediately at module load
+// instead run only when server starts handling requests
+app.use(async (req, res, next) => {
+  await initServices();
+  next();
+});
 
 // --------------------
 // Middlewares
