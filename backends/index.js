@@ -2,13 +2,15 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { connectDB } from "./config/db.js";
+
 import authRoutes from "./routes/authRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
 import menuRoutes from "./routes/menuRoutes.js";
 import cartRoutes from "./routes/cartRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+
+import { connectDB } from "./config/db.js";
 import connectCloudinary from "./config/cloudinary.js";
 
 dotenv.config();
@@ -16,24 +18,28 @@ dotenv.config();
 const app = express();
 
 // --------------------
-// SAFE INIT (Vercel-friendly)
+// SAFE SINGLE INIT (CRITICAL FIX)
 // --------------------
-let dbConnected = false;
+let initialized = false;
 
-const init = async () => {
-  if (!dbConnected) {
-    try {
-      await connectDB();
-      connectCloudinary();
-      dbConnected = true;
-      console.log("DB + Cloudinary connected");
-    } catch (err) {
-      console.error("Init error:", err);
-    }
+const initServices = async () => {
+  if (initialized) return;
+
+  try {
+    await connectDB();
+    connectCloudinary();
+    initialized = true;
+    console.log("DB + Cloudinary connected");
+  } catch (err) {
+    console.log("Init error:", err.message);
   }
 };
 
-init();
+// Run before every request (serverless safe)
+app.use(async (req, res, next) => {
+  await initServices();
+  next();
+});
 
 // --------------------
 // Middlewares
@@ -69,6 +75,6 @@ app.use((req, res) => {
 });
 
 // --------------------
-// VERCEL REQUIRED EXPORT
+// EXPORT FOR VERCEL
 // --------------------
 export default app;
