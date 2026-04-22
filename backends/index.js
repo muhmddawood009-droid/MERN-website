@@ -18,7 +18,7 @@ dotenv.config();
 const app = express();
 
 // --------------------
-// SAFE SINGLE INIT (CRITICAL FIX)
+// INIT ONCE ONLY (IMPORTANT FIX)
 // --------------------
 let initialized = false;
 
@@ -35,11 +35,8 @@ const initServices = async () => {
   }
 };
 
-// Run before every request (serverless safe)
-app.use(async (req, res, next) => {
-  await initServices();
-  next();
-});
+// run ONCE at cold start only
+initServices();
 
 // --------------------
 // Middlewares
@@ -75,6 +72,6 @@ app.use((req, res) => {
 });
 
 // --------------------
-// EXPORT FOR VERCEL
+// EXPORT
 // --------------------
 export default app;
