@@ -22,7 +22,7 @@ connectCloudinary();
 // Middlewares
 app.use(express.json());
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://mern-website-frontend-eight.vercel.app",
   credentials: true,
 }));
 app.use(cookieParser());
