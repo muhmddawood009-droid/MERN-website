@@ -17,27 +17,37 @@ import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
 
-/* ------------------ INIT SERVICES ------------------ */
-connectDB();
-connectCloudinary();
+/* ------------------ DATABASE CONNECTION ------------------ */
+try {
+  console.log("🔄 Connecting to MongoDB...");
+  connectDB();
+  console.log("✅ MongoDB connection initialized");
+} catch (error) {
+  console.error("❌ DB Connection Failed:", error.message);
+}
+
+/* ------------------ CLOUDINARY ------------------ */
+try {
+  console.log("🔄 Connecting Cloudinary...");
+  connectCloudinary();
+  console.log("✅ Cloudinary initialized");
+} catch (error) {
+  console.error("❌ Cloudinary Error:", error.message);
+}
 
 /* ------------------ MIDDLEWARES ------------------ */
 app.use(express.json());
-app.use(cookieParser());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://your-frontend-domain.vercel.app"
-    ],
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: "http://localhost:5173", // FIXED (http not https)
+  credentials: true,
+}));
+
+app.use(cookieParser());
 
 /* ------------------ ROUTES ------------------ */
 app.get("/", (req, res) => {
-  res.send("🚀 Backend is running successfully");
+  res.send("🚀 Server is running successfully");
 });
 
 app.use("/api/auth", authRoutes);
@@ -47,7 +57,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/order", orderRoutes);
 app.use("/api/booking", bookingRoutes);
 
-/* ------------------ ERROR HANDLERS ------------------ */
+/* ------------------ 404 HANDLER ------------------ */
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -55,8 +65,9 @@ app.use((req, res) => {
   });
 });
 
+/* ------------------ ERROR HANDLER ------------------ */
 app.use((err, req, res, next) => {
-  console.error("🔥 Error:", err);
+  console.error("🔥 Server Error:", err.stack);
 
   res.status(500).json({
     success: false,
@@ -64,15 +75,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-/* ------------------ SMART SERVER START ------------------ */
-// ONLY run locally, NOT on Vercel
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 4000;
+/* ------------------ START SERVER ------------------ */
+const PORT = process.env.PORT || 4000;
 
-  app.listen(PORT, () => {
-    console.log(`🚀 Local server running on port ${PORT}`);
-  });
-}
-
-/* ------------------ EXPORT FOR VERCEL ------------------ */
-export default app;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
