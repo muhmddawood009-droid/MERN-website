@@ -39,10 +39,11 @@ const Login = () => {
         onSubmit={handleSubmit}
         className="w-[350px] text-center bg-gray-900 border border-gray-800 rounded-2xl px-6 py-8"
       >
-        <h1 className="text-white text-2xl font-medium">Login</h1>
+        
         <p className="text-gray-400 text-sm mt-2">Please Login to continue</p>
-
+        
         <div className="flex items-center w-full mt-4 bg-gray-800 border border-gray-700 h-10 rounded-full pl-4 gap-2">
+          <h1 className="text-white text-2xl font-medium">Login</h1>
           <MailIcon className="text-white" />
           <input
             type="email"
@@ -84,7 +85,9 @@ const Login = () => {
             signup
           </Link>
         </p>
+        
       </form>
+      
     </div>
   );
 };

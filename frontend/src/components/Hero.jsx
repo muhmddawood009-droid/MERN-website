@@ -35,7 +35,7 @@ const Hero = () => {
             className="cursor-pointer border border-white bg-transparent hover:bg-white 
             hover:text-black text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
           >
-            Book a Table
+            sign up
           </button>
         </div>
       </div>

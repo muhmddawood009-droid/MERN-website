@@ -43,6 +43,7 @@ const Navbar = () => {
             <Link to="/menu" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Menus</Link>
             <Link to="/book-table" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Book Table</Link>
             <Link to="/contact" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Contact</Link>
+            <Link to="/admin" className="text-gray-700 hover:text-blue-600 transition-colors font-medium">Admin Pannel</Link>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -95,9 +96,9 @@ const Navbar = () => {
               ) : (
                 <button
                   onClick={() => navigate("/login")}
-                  className="bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-medium cursor-pointer"
+                  className="bg-green-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition-colors font-medium cursor-pointer"
                 >
-                  Login
+                  Sign up
                 </button>
               )}
             </div>
